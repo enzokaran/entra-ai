@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro e Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #06d6a0;
+            --danger: #ef476f;
+            --gray: #6c757d;
+            --border-radius: 16px;
+            --shadow: 0 10px 30px rgba(67, 97, 238, 0.15);
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2c73a3 0%, #26004d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .form-wrapper {
+            padding: 40px 30px;
+            position: relative;
+            transition: var(--transition);
+            display: none; /* Adicionado para ocultar formulários não ativos */
+        }
+        .form-wrapper.active {
+            display: block; /* Adicionado para mostrar formulário ativo */
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 22px;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 16px;
+            z-index: 2;
+        }
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 44px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: var(--transition);
+            background: #f8f9fa;
+            color: var(--dark);
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+        input::placeholder {
+            color: #adb5bd;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+        button i {
+            font-size: 18px;
+        }
+          .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        .toggle-text a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .toggle-text a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.success {
+            background: rgba(6, 214, 160, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+        }
+        .message.error {
+            background: rgba(239, 71, 111, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 71, 111, 0.3);
+        }
+        .form-switch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background: var(--primary);
+            transition: transform 0.4s ease;
+            border-radius: 2px;
+        }
+        #register.active ~ .form-switch {
+            transform: translateX(0);
+        }
+        #login.active ~ .form-switch {
+            transform: translateX(100%);
+        }
+        @media (max-width: 480px) {
+            .form-wrapper {
+                padding: 30px 20px;
+            }
+            .logo i {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-switch"></div>
+        <!-- Formulário de Cadastro -->
+        <div id="register" class="form-wrapper active">
+            <div class="logo">
+                <i class="fas fa-user-plus"></i>
+                <h1>Crie sua conta</h1>
+            </div>
+            <h2>Cadastrar</h2>
+            <form id="registerForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regUsername" placeholder="Nome de usuário" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="Senha" required>
+                </div>
+                <button type="submit">
+                    <i class="fas fa-user-check"></i>
+                    Cadastrar
+                </button>
+            </form>
+            <p class="toggle-text">Já tem conta? <a href="#" onclick="showLogin()">Fazer Login</a></p>
+        </div>
+        
+        <!-- Formulário de Login -->
+        <div id="login" class="form-wrapper">
+            <div class="logo">
+                <i class="fas fa-sign-in-alt"></i>
+                <h1>Bem-vindo de volta</h1>
+            </div>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="Nome de usuário" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Senha" required>
+                </div>
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Entrar
+                </button>
+            </form>
+            <p class="toggle-text">Não tem conta? <a href="#" onclick="showRegister()">Cadastrar</a></p>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+<script>
+    console.log('Script carregado'); // Log inicial
+    // Função para mostrar formulário de cadastro
+    function showRegister() {
+        console.log('Chamando showRegister');
+        document.getElementById('register').classList.add('active');
+        document.getElementById('login').classList.remove('active');
+        document.getElementById('message').textContent = '';
+        document.getElementById('message').classList.remove('show', 'success', 'error');
+    }
+    // Função para mostrar formulário de login
+    function showLogin() {
+        console.log('Chamando showLogin');
+        document.getElementById('register').classList.remove('active');
+        document.getElementById('login').classList.add('active');
+        document.getElementById('message').textContent = '';
+        document.getElementById('message').classList.remove('show', 'success', 'error');
+    }
+    // Manipular cadastro
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        console.log('Evento submit do cadastro disparado');
+        e.preventDefault(); // Isso deveria impedir o reload
+        console.log('preventDefault executado');
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value;
+        console.log('Username:', username, 'Password length:', password.length);
+        
+        if (!username || !password) {
+            showMessage('Preencha todos os campos!', 'error');
+            return;
+        }
+        
+        if (localStorage.getItem(username)) {
+            showMessage('Usuário já existe!', 'error');
+            return;
+        }
+        
+        localStorage.setItem(username, password);
+        console.log('Usuário salvo no localStorage');
+        showMessage('Cadastro realizado com sucesso! Faça login.', 'success');
+        setTimeout(() => {
+            console.log('Chamando showLogin via setTimeout');
+            showLogin();
+        }, 1500);
+    });
+    // Manipular login
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        console.log('Evento submit do login disparado');
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!username || !password) {
+            showMessage('Preencha todos os campos!', 'error');
+            return;
+        }
+        
+        const storedPassword = localStorage.getItem(username);
+        if (storedPassword && storedPassword === password) {
+            showMessage('Login bem-sucedido! Redirecionando...', 'success');
+            setTimeout(() => {
+                window.location.href = 'https://www.xvideos.com/video.hdfccubd176/e_pra_tranza';
+            }, 1000);
+        } else {
+            showMessage('Usuário ou senha incorretos!', 'error');
+        }
+    });
+    // Função auxiliar para exibir mensagens
+    function showMessage(text, type) {
+        console.log('Exibindo mensagem:', text, type);
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = text;
+        messageEl.className = `message show ${type}`;
+    }
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOMContentLoaded disparado');
+        showRegister();
+    });
+</script>
+    </body>
+</html>
